@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "pereval-api"
+version = "0.1.0"
+description = "REST API для учёта и модерации горных перевалов"
+authors = ["Svetlana Krasnova"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+alembic = "^1.14.0"
+fastapi = {extras = ["all"], version = "^0.115.11"}
+pydantic-settings = "^2.8.1"
+pytest = "^8.3.5"
+pytest_asyncio = "0.24.0"
+asyncpg = "^0.30.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
