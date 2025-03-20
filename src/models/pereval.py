@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Column, Enum, Integer, TIMESTAMP, String, ForeignKey, Text, Float
+from sqlalchemy import Column, Enum, Integer, TIMESTAMP, String, ForeignKey, Text, Float, LargeBinary
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -49,16 +49,17 @@ class PerevalAdded(Base):
     add_time = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     coord_id = Column(Integer, ForeignKey("coords.id"), nullable=False)
-    image_id = Column(Integer, ForeignKey("images.id"))
     level_id = Column(Integer, ForeignKey("levels.id"), nullable=False)
     status = Column(Enum(StatusEnum), nullable=False, default="new")
     user = relationship("User", back_populates="pereval_added")
     coords = relationship("Coord", back_populates="pereval_added")
     levels = relationship("Level", back_populates="pereval_added")
-    images = relationship("Image", back_populates="author")
+    images = relationship("Image", back_populates="pereval")
 
 
 class Image(Base):
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     title = Column(String(150), nullable=False)
-    author = relationship("PerevalAdded", back_populates="images")
+    data = Column(LargeBinary,  nullable=False)
+    pereval_id = Column(Integer, ForeignKey("perevaladdeds.id"), nullable=False)
+    pereval = relationship("PerevalAdded", back_populates="images")
