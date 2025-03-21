@@ -1,23 +1,23 @@
 from datetime import datetime
-from src.models.pereval import PerevalAdded
-from src.dependencies import db_dependency
+from typing import List, Optional
+
 from sqlalchemy.future import select
+
+from src import db_dependency
+from src.models import Coord, Image, Level, User
+from src.models.pereval import PerevalAdded
+from src.schemas import CoordsSchema, ImageSchema, LevelSchema, UserSchema
 from src.schemas.pereval import PerevalPostSchema
-from typing import List
-from src.models import Image, User, Coord, Level
-from src.schemas import ImageSchema, UserSchema, CoordsSchema, LevelSchema
-from typing import Optional
 
 
 class Pereval:
-
     async def add_pereval(self, pereval: PerevalPostSchema, session: db_dependency) -> PerevalAdded:
-        '''
+        """
         Добавление перевала
         :param db: сессия
         :param pereval: данные с post запроса
         :return:
-        '''
+        """
         user_id = await self.add_user(pereval.user, session)
         coords_id = await self.add_coords(pereval.coords, session)
         level_id = await self.add_levels(pereval.level, session)
@@ -26,7 +26,7 @@ class Pereval:
             title=pereval.title,
             other_titles=pereval.other_titles,
             connect=pereval.connect,
-            add_time=datetime.strptime(pereval.add_time, "%Y-%m-%d %H:%M:%S"),
+            add_time=datetime.strptime(pereval.add_time, '%Y-%m-%d %H:%M:%S'),
             user_id=user_id,
             coord_id=coords_id,
             level_id=level_id,

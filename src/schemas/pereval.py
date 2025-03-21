@@ -1,12 +1,13 @@
-from pydantic import BaseModel, Field, PositiveInt, PositiveFloat, Base64Bytes, EmailStr
 from typing import List, Optional
+
+from pydantic import Base64Bytes, BaseModel, EmailStr, Field, PositiveFloat, PositiveInt
 
 
 class UserSchema(BaseModel):
     email: EmailStr
     fam: str = Field(max_length=150)
     name: str = Field(max_length=150)
-    otc: Optional[str] = Field(max_length=150, default="")
+    otc: Optional[str] = Field(max_length=150, default='')
     phone: Optional[str] = Field(max_length=15, default=None)
 
 
@@ -17,10 +18,10 @@ class CoordsSchema(BaseModel):
 
 
 class LevelSchema(BaseModel):
-    winter: str = Field(max_length=2, default="")
-    summer: str = Field(max_length=2, default="")
-    autumn: str = Field(max_length=2, default="")
-    spring: str = Field(max_length=2, default="")
+    winter: str = Field(max_length=2, default='')
+    summer: str = Field(max_length=2, default='')
+    autumn: str = Field(max_length=2, default='')
+    spring: str = Field(max_length=2, default='')
 
 
 class ImageSchema(BaseModel):
