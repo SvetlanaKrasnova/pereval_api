@@ -14,6 +14,7 @@ async def submit_data(pereval: PerevalPostSchema, session: db_dependency):
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
+            'status': status.HTTP_200_OK,
             'id': pereval_db.id,
             'message': None,
         },

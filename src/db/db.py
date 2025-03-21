@@ -15,8 +15,9 @@ async def get_async_session() -> AsyncSession:
     async with async_session() as session:
         try:
             yield session
-        except Exception:
+        except Exception as e:
             await session.rollback()
+            raise e
 
 
 def create_sessionmaker(bind_engine: Union[AsyncEngine, AsyncConnection]) -> Callable[..., async_sessionmaker]:

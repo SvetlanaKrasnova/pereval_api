@@ -18,13 +18,21 @@ async def error_middleware(request: Request, call_next):
         logger.exception(exc)
         return JSONResponse(
             status_code=exc.status_code,
-            content={'message': exc.detail},
+            content={
+                'status': exc.status_code,
+                'message': exc.detail,
+                'id': None,
+            },
         )
     except Exception as e:
         logger.exception(f'{request.url} | Error in application: {e}')
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={'message': str(e)},
+            content={
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': str(e),
+                'id': None,
+            },
         )
 
 
