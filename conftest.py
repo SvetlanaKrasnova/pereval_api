@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -29,8 +31,8 @@ async def connection():
 @pytest_asyncio.fixture
 async def dbsession(connection):
     async with AsyncSession(
-            bind=connection,
-            join_transaction_mode="create_savepoint",
-            expire_on_commit=False,
+        bind=connection,
+        join_transaction_mode="create_savepoint",
+        expire_on_commit=False,
     ) as session:
         yield session
