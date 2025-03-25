@@ -55,3 +55,30 @@ async def test_update_pereval(dbsession: AsyncSession, add_data, update_data):
         assert len(update_data.images) == len(new_images)
     else:
         assert len(new_images) == 0
+
+
+@pytest.mark.parametrize(
+    argnames=('add_data',),
+    argvalues=[
+        (ADD_PEREVAL_WITHOUT_IMAGES,),
+        (ADD_PEREVAL_WITH_IMAGES,),
+        (ADD_PEREVAL_OTHER_USER,),
+    ],
+    ids=(
+        'get_info_pereval_without_images',
+        'get_info_pereval_with_images',
+        'get_info_pereval_other_user',
+    ),
+)
+async def test_get_info_pereval(dbsession: AsyncSession, add_data: PerevalSchema):
+    pereval_id = await db.add_pereval(pereval=add_data, session=dbsession)
+    info_pereval = await db.get_info_pereval_by_id(pereval_id, dbsession)
+    assert add_data.title == info_pereval.title
+    assert add_data.user.email == info_pereval.user.email
+    assert add_data.coords.height == info_pereval.coords.height
+    assert add_data.level.summer == info_pereval.level.summer
+    assert len(add_data.images) == len(info_pereval.images)
+    if add_data.images:
+        add_data_title_images = ''.join([image.title for image in add_data.images])
+        info_pereval_title_images = ''.join([image.title for image in info_pereval.images])
+        assert add_data_title_images == info_pereval_title_images

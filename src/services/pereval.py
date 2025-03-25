@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List, Optional
 
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import delete, select, update
 
 from src import db_dependency
 from src.exceptions import PerevalUpdateError
 from src.models import Coord, Image, Level, PerevalAdded, User
 from src.schemas import CoordsSchema, ImageSchema, LevelSchema, PerevalReplaceSchema, PerevalSchema, UserSchema
-from fastapi.encoders import jsonable_encoder
 
 
 class Pereval:
@@ -26,7 +26,7 @@ class Pereval:
                 user=UserSchema(**jsonable_encoder(user)),
                 coords=CoordsSchema(**jsonable_encoder(coord)),
                 level=LevelSchema(**jsonable_encoder(level)),
-                images=images,
+                images=[ImageSchema(**jsonable_encoder(image)) for image in images],
             )
         return None
 

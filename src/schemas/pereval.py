@@ -37,7 +37,7 @@ class PerevalReplaceSchema(BaseModel):
     add_time: str
     coords: CoordsSchema = Field(default=CoordsSchema)
     level: LevelSchema = Field(default=LevelSchema)
-    images: Optional[List[ImageSchema]] = Field(default=None)
+    images: Optional[List[ImageSchema]] = Field(default=[])
 
 
 class PerevalSchema(PerevalReplaceSchema):
