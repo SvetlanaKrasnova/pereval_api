@@ -7,7 +7,7 @@ from typing import AsyncContextManager
 
 from fastapi import FastAPI
 
-from src.api import api_router
+from src.api import pereval_router
 from src.core.logger import LOGGING_CONFIG
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -27,4 +27,4 @@ async def lifespan(app: FastAPI) -> AsyncContextManager[None]:
 
 
 app = FastAPI(lifespan=lifespan, docs_url='/api/openapi')
-app.include_router(api_router)
+app.include_router(pereval_router)

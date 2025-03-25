@@ -29,13 +29,16 @@ class ImageSchema(BaseModel):
     title: str = Field(max_length=150)
 
 
-class PerevalPostSchema(BaseModel):
+class PerevalReplaceSchema(BaseModel):
     beauty_title: str = Field(max_length=250)
     title: str = Field(max_length=250)
     other_titles: str = Field(max_length=250)
     connect: str = Field(default='')
     add_time: str
-    user: UserSchema = Field(default=UserSchema)
     coords: CoordsSchema = Field(default=CoordsSchema)
     level: LevelSchema = Field(default=LevelSchema)
     images: Optional[List[ImageSchema]] = Field(default=None)
+
+
+class PerevalSchema(PerevalReplaceSchema):
+    user: UserSchema = Field(default=UserSchema)

@@ -1,9 +1,3 @@
-__all__ = [
-    'PerevalPostSchema',
-    'ImageSchema',
-    'UserSchema',
-    'CoordsSchema',
-    'LevelSchema',
-]
+__all__ = ['PerevalSchema', 'ImageSchema', 'UserSchema', 'CoordsSchema', 'LevelSchema', 'PerevalReplaceSchema']
 
-from .pereval import CoordsSchema, ImageSchema, LevelSchema, PerevalPostSchema, UserSchema
+from .pereval import CoordsSchema, ImageSchema, LevelSchema, PerevalReplaceSchema, PerevalSchema, UserSchema
