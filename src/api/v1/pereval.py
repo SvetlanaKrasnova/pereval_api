@@ -44,14 +44,15 @@ async def get_perevals_by_user_email(
 
 
 @pereval_router.patch('/{id}')
-async def update_pereval(pereval_id: int, pereval: PerevalReplaceSchema, session: db_dependency) -> JSONResponse:
+async def update_pereval(pereval_id: int, data_to_update: PerevalReplaceSchema, session: db_dependency) -> JSONResponse:
     try:
         if not (db_pereval := await db.get_pereval_by_id(pereval_id, session)):
             raise PerevalNotFoundError(pereval_id)
 
-        if await db_pereval.status != StatusEnum.new:
-            await db.update_pereval(db_pereval, pereval, session)
-    except (PerevalNotFoundError, PerevalUpdateError) as e:
+        if db_pereval.status.value != StatusEnum.new.value:
+            raise IncorrectPerevalStatus(db_pereval.status.value)
+        await db.update_pereval(db_pereval, data_to_update, session)
+    except (PerevalNotFoundError, PerevalUpdateError, IncorrectPerevalStatus) as e:
         return JSONResponse(
             status_code=e.status_code,
             content={

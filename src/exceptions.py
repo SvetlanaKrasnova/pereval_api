@@ -24,3 +24,11 @@ class UserNotFoundByEmailError(HTTPException):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f'User not found by email = "{user_email}"',
         )
+
+
+class IncorrectPerevalStatus(HTTPException):
+    def __init__(self, status_pereval: str):
+        super(IncorrectPerevalStatus, self).__init__(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'Pereval cannot be updated. The recording status is incorrect = "{status_pereval}"',
+        )
