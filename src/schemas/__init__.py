@@ -1,3 +1,19 @@
-__all__ = ['PerevalSchema', 'ImageSchema', 'UserSchema', 'CoordsSchema', 'LevelSchema', 'PerevalReplaceSchema']
+__all__ = [
+    'PerevalAddSchema',
+    'PerevalShowSchema',
+    'ImageSchema',
+    'UserSchema',
+    'CoordsSchema',
+    'LevelSchema',
+    'PerevalReplaceSchema',
+]
 
-from .pereval import CoordsSchema, ImageSchema, LevelSchema, PerevalReplaceSchema, PerevalSchema, UserSchema
+from .pereval import (
+    CoordsSchema,
+    ImageSchema,
+    LevelSchema,
+    PerevalAddSchema,
+    PerevalReplaceSchema,
+    PerevalShowSchema,
+    UserSchema,
+)

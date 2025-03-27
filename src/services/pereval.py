@@ -1,5 +1,6 @@
+import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Sequence, Tuple
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import delete, select, update
@@ -7,32 +8,43 @@ from sqlalchemy import delete, select, update
 from src import db_dependency
 from src.exceptions import PerevalUpdateError
 from src.models import Coord, Image, Level, PerevalAdded, User
-from src.schemas import CoordsSchema, ImageSchema, LevelSchema, PerevalReplaceSchema, PerevalSchema, UserSchema
+from src.schemas import (
+    CoordsSchema,
+    ImageSchema,
+    LevelSchema,
+    PerevalAddSchema,
+    PerevalReplaceSchema,
+    PerevalShowSchema,
+    UserSchema,
+)
 
 
 class Pereval:
-    async def get_info_pereval_by_id(self, pereval_id: int, session: db_dependency) -> Optional[PerevalSchema]:
-        if pereval := await self.get_pereval_by_id(pereval_id, session):
-            user = await self._get_user_by_id(pereval.user_id, session)
-            coord = await self._get_coord_by_id(pereval.coord_id, session)
-            level = await self._get_level_by_id(pereval.level_id, session)
-            images = await self._get_images_by_pereval_id(pereval_id, session)
-            return PerevalSchema(
-                beauty_title=pereval.beauty_title,
-                title=pereval.title,
-                other_titles=pereval.other_titles,
-                connect=pereval.connect,
-                add_time=str(pereval.add_time),
-                user=UserSchema(**jsonable_encoder(user)),
-                coords=CoordsSchema(**jsonable_encoder(coord)),
-                level=LevelSchema(**jsonable_encoder(level)),
-                images=[ImageSchema(**jsonable_encoder(image)) for image in images],
-            )
-        return None
+    def __init__(self):
+        self.logger = logging.getLogger('pereval')
 
-    async def get_pereval_by_id(self, pereval_id: int, session: db_dependency) -> Optional[PerevalAdded]:
-        pereval = await session.execute(select(PerevalAdded).where(PerevalAdded.id == pereval_id))
-        return pereval.scalar_one_or_none()
+    async def get_perevals_by_user_id(self, user_id: int, session: db_dependency) -> List[PerevalShowSchema]:
+        _perevals = await session.execute(select(PerevalAdded).where(PerevalAdded.user_id == user_id))
+        perevals = _perevals.scalars().all()
+        return [await self.get_info_pereval(pereval, session) for pereval in perevals]
+
+    async def get_info_pereval(self, pereval: PerevalAdded, session: db_dependency) -> PerevalShowSchema:
+        user = await self._get_user_by_id(pereval.user_id, session)
+        coord = await self._get_coord_by_id(pereval.coord_id, session)
+        level = await self._get_level_by_id(pereval.level_id, session)
+        images = await self._get_images_by_pereval_id(pereval.id, session)
+        return PerevalShowSchema(
+            beauty_title=pereval.beauty_title,
+            title=pereval.title,
+            other_titles=pereval.other_titles,
+            connect=pereval.connect,
+            add_time=str(pereval.add_time),
+            user=UserSchema(**jsonable_encoder(user)),
+            coords=CoordsSchema(**jsonable_encoder(coord)),
+            level=LevelSchema(**jsonable_encoder(level)),
+            images=[ImageSchema(**jsonable_encoder(image)) for image in images],
+            status=pereval.status,
+        )
 
     async def _get_user_by_id(self, user_id: int, session: db_dependency) -> User:
         user = await session.execute(select(User).where(User.id == user_id))
@@ -50,7 +62,15 @@ class Pereval:
         images = await session.execute(select(Image).where(Image.pereval_id == pereval_id))
         return images.scalars().all()
 
-    async def add_pereval(self, pereval: PerevalSchema, session: db_dependency) -> int:
+    async def get_pereval_by_id(self, pereval_id: int, session: db_dependency) -> Optional[PerevalAdded]:
+        pereval = await session.execute(select(PerevalAdded).where(PerevalAdded.id == pereval_id))
+        return pereval.scalar_one_or_none()
+
+    async def add_pereval(
+        self,
+        pereval: Sequence[Tuple[PerevalAddSchema, PerevalShowSchema]],
+        session: db_dependency,
+    ) -> int:
         """
         Добавление перевала
         :param db: сессия
@@ -108,28 +128,37 @@ class Pereval:
     async def update_pereval(
         self,
         db_pereval: PerevalAdded,
-        pereval: PerevalReplaceSchema,
+        data_update: PerevalReplaceSchema,
         session: db_dependency,
     ) -> bool:
+        pereval_data = data_update.model_dump()
         try:
-            pereval_data = pereval.model_dump()
-            pereval_data['add_time'] = datetime.strptime(pereval.add_time, '%Y-%m-%d %H:%M:%S')
+            pereval_data['add_time'] = datetime.strptime(data_update.add_time, '%Y-%m-%d %H:%M:%S')
             coords = pereval_data.pop('coords')
             level = pereval_data.pop('level')
             pereval_data.pop('images')
             await session.execute(update(Coord).where(Coord.id == db_pereval.coord_id).values(coords))
             await session.execute(update(Level).where(Level.id == db_pereval.level_id).values(level))
             await session.execute(delete(Image).where(Image.pereval_id == db_pereval.id))
-            if pereval.images:
-                await self._add_images(db_pereval.id, pereval.images, session)
+            if data_update.images:
+                await self._add_images(db_pereval.id, data_update.images, session)
             else:
                 await session.execute(delete(Image).where(Image.pereval_id == db_pereval.id))
             await session.execute(update(PerevalAdded).where(PerevalAdded.id == db_pereval.id).values(pereval_data))
+            await session.commit()
         except Exception as e:
+            # Перезаписываем на первоначальное значение
+            self.logger.warning(f'Error the update pereval "{db_pereval.id}". Delete data')
+            info_pereval = await self.get_info_pereval(db_pereval, session)
+            await self._delete_pereval(db_pereval, session)
+            await self.add_pereval(info_pereval, session)
+            self.logger.warning('Adding the original pereval. Success')
             raise PerevalUpdateError(e)
         return True
 
-    async def get_perevals_by_user_id(self, user_id: int, session: db_dependency) -> Optional[List[PerevalAdded]]:
-        if perevals := await session.execute(select(PerevalAdded).where(PerevalAdded.user_id == user_id)):
-            return perevals.scalars().all()
-        return None
+    async def _delete_pereval(self, pereval: PerevalAdded, session: db_dependency) -> None:
+        await session.execute(delete(Image).where(Image.pereval_id == pereval.id))
+        await session.execute(delete(PerevalAdded).where(PerevalAdded.id == pereval.id))
+        await session.execute(delete(Coord).where(Coord.id == pereval.coord_id))
+        await session.execute(delete(Level).where(Level.id == pereval.level_id))
+        await session.commit()
