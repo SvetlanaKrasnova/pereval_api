@@ -23,6 +23,10 @@ jobs:
       run: |
         ruff format src/
         ruff check src/
+        ruff format test_db_pereval.py
+        ruff check test_db_pereval.py
+        ruff format data_for_tests.py
+        ruff check data_for_tests.py
     - name: Run tests
       env:
         FSTR_DB_HOST: ${{ secrets.FSTR_DB_HOST }}

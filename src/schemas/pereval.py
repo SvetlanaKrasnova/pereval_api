@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from pydantic import Base64Bytes, BaseModel, EmailStr, Field, PositiveFloat, PositiveInt
 
+from src.models import StatusEnum
+
 
 class UserSchema(BaseModel):
     email: EmailStr
@@ -29,13 +31,25 @@ class ImageSchema(BaseModel):
     title: str = Field(max_length=150)
 
 
-class PerevalPostSchema(BaseModel):
+class BasePereval(BaseModel):
     beauty_title: str = Field(max_length=250)
     title: str = Field(max_length=250)
     other_titles: str = Field(max_length=250)
     connect: str = Field(default='')
     add_time: str
-    user: UserSchema = Field(default=UserSchema)
     coords: CoordsSchema = Field(default=CoordsSchema)
     level: LevelSchema = Field(default=LevelSchema)
-    images: Optional[List[ImageSchema]] = Field(default=None)
+    images: Optional[List[ImageSchema]] = Field(default=[])
+
+
+class PerevalReplaceSchema(BasePereval):
+    pass
+
+
+class PerevalAddSchema(BasePereval):
+    user: UserSchema = Field(default=UserSchema)
+
+
+class PerevalShowSchema(BasePereval):
+    user: UserSchema = Field(default=UserSchema)
+    status: str = Field(default=StatusEnum.new.value)
