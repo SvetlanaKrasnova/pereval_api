@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Optional, Union
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import delete, select, update
@@ -68,7 +68,7 @@ class Pereval:
 
     async def add_pereval(
         self,
-        pereval: Sequence[Tuple[PerevalAddSchema, PerevalShowSchema]],
+        pereval: Union[PerevalAddSchema, PerevalShowSchema],
         session: db_dependency,
     ) -> int:
         """

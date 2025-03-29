@@ -14,7 +14,7 @@ db = Pereval()
 
 
 @pereval_router.post('/')
-async def submit_data(pereval: PerevalAddSchema, session: db_dependency) -> JSONResponse:
+async def add_pereval(pereval: PerevalAddSchema, session: db_dependency) -> JSONResponse:
     pereval_id = await db.add_pereval(pereval=pereval, session=session)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -26,8 +26,8 @@ async def submit_data(pereval: PerevalAddSchema, session: db_dependency) -> JSON
     )
 
 
-@pereval_router.get('/{id}')
-async def get_pereval(pereval_id: int, session: db_dependency) -> PerevalShowSchema:
+@pereval_router.get('/{pereval_id}')
+async def get_pereval_by_id(pereval_id: int, session: db_dependency) -> PerevalShowSchema:
     if not (db_pereval := await db.get_pereval_by_id(pereval_id, session)):
         raise PerevalNotFoundError(pereval_id)
     return await db.get_info_pereval(db_pereval, session)
@@ -43,8 +43,12 @@ async def get_perevals_by_user_email(
     return await db.get_perevals_by_user_id(user.id, session)
 
 
-@pereval_router.patch('/{id}')
-async def update_pereval(pereval_id: int, data_to_update: PerevalReplaceSchema, session: db_dependency) -> JSONResponse:
+@pereval_router.patch('/{pereval_id}')
+async def update_pereval_by_id(
+    pereval_id: int,
+    data_to_update: PerevalReplaceSchema,
+    session: db_dependency,
+) -> JSONResponse:
     try:
         if not (db_pereval := await db.get_pereval_by_id(pereval_id, session)):
             raise PerevalNotFoundError(pereval_id)

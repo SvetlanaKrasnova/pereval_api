@@ -26,5 +26,10 @@ async def lifespan(app: FastAPI) -> AsyncContextManager[None]:
         queue_listener.stop()
 
 
-app = FastAPI(lifespan=lifespan, docs_url='/api/openapi')
+app = FastAPI(
+    title='Pereval API',
+    description='REST API для учёта и модерации горных перевалов',
+    lifespan=lifespan,
+    docs_url='/api/openapi',
+)
 app.include_router(pereval_router)
