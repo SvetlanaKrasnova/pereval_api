@@ -7,16 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Login Yandex Cloud
-        uses: yc-actions/yc-cr-login@v1
+
+      - name: Login Yandex Cloud
+        uses: yc-actions/yc-cr-login@v2
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-      -
-        name: Build and push image to Yandex Cloud Container Registry
+
+      - name: Build and push image to Yandex Cloud Container Registry
         env:
           CR_REGISTRY: ${{secrets.YANDEX_REGISTRY_ID}}
           CR_REPOSITORY: ${{secrets.YANDEX_REPO_NAME}}
