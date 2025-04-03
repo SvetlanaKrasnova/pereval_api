@@ -43,7 +43,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           OAUTH_DOCKER_PASS: ${{ secrets.OAUTH_DOCKER_PASS }}
         run: |
-          sudo docker login --username oauth --pasword $OAUTH_DOCKER_PASS cr.yandex
+          sudo docker login --username oauth --password $OAUTH_DOCKER_PASS cr.yandex
           sudo docker pull cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
           sudo docker rm -f pereval
           sudo docker run -d -p 8080:8080 --name pereval cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
