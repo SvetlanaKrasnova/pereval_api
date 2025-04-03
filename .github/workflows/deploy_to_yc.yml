@@ -25,7 +25,7 @@ jobs:
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
   deploy_image_to_yc:
-    needs: build
+    needs: build_image_to_yc
     runs-on: ubuntu-latest
     steps:
       - name: Connect to VM on SSH
