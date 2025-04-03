@@ -37,13 +37,13 @@ jobs:
           passphrase: ${{ secrets.YANDEX_SSH_PASSPHRASE }}
           port: ${{ secrets.VM_PORT }}
       - name: Rum commands to VM
-          env:
-            CR_REGISTRY: ${{ secrets.YANDEX_REGISTRY_ID }}
-            CR_REPOSITORY: ${{ secrets.YANDEX_REPO_NAME }}
-            IMAGE_TAG: ${{ github.sha }}
-            OAUTH_DOCKER_PASS: ${{ secrets.OAUTH_DOCKER_PASS }}
-          script: |
-            sudo docker login --username oauth --pasword $OAUTH_DOCKER_PASS cr.yandex
-            sudo docker pull cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
-            sudo docker rm -f pereval
-            sudo docker run -d -p 8080:8080 --name pereval cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+        env:
+          CR_REGISTRY: ${{ secrets.YANDEX_REGISTRY_ID }}
+          CR_REPOSITORY: ${{ secrets.YANDEX_REPO_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+          OAUTH_DOCKER_PASS: ${{ secrets.OAUTH_DOCKER_PASS }}
+        script: |
+          sudo docker login --username oauth --pasword $OAUTH_DOCKER_PASS cr.yandex
+          sudo docker pull cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+          sudo docker rm -f pereval
+          sudo docker run -d -p 8080:8080 --name pereval cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
