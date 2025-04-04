@@ -32,11 +32,11 @@ jobs:
           ruff check data_for_tests.py
       - name: Run tests
         env:
-          INPUT_FSTR_DB_HOST: ${{ secrets.FSTR_DB_HOST }}
-          INPUT_FSTR_DB_PORT: ${{ secrets.FSTR_DB_PORT }}
-          INPUT_FSTR_DB_NAME: ${{ secrets.FSTR_DB_NAME }}
-          INPUT_FSTR_DB_LOGIN: ${{ secrets.FSTR_DB_LOGIN }}
-          INPUT_FSTR_DB_PASS: ${{ secrets.FSTR_DB_PASS }}
+          FSTR_DB_HOST: ${{ secrets.FSTR_DB_HOST }}
+          FSTR_DB_PORT: ${{ secrets.FSTR_DB_PORT }}
+          FSTR_DB_NAME: ${{ secrets.FSTR_DB_NAME }}
+          FSTR_DB_LOGIN: ${{ secrets.FSTR_DB_LOGIN }}
+          FSTR_DB_PASS: ${{ secrets.FSTR_DB_PASS }}
         run: |
           pytest
   build_image_to_yc:
