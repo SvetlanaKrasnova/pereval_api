@@ -56,7 +56,6 @@ jobs:
           FSTR_DB_HOST: ${{ secrets.FSTR_DB_HOST }}
           FSTR_DB_PORT: ${{ secrets.FSTR_DB_PORT }}
           FSTR_DB_NAME: ${{ secrets.FSTR_DB_NAME }}
-          FSTR_DB_LOGIN: ${{ secrets.FSTR_DB_LOGIN }}
           FSTR_DB_PASS: ${{ secrets.FSTR_DB_PASS }}
           CR_REGISTRY: ${{secrets.YANDEX_REGISTRY_ID}}
           CR_REPOSITORY: ${{secrets.YANDEX_REPO_NAME}}
