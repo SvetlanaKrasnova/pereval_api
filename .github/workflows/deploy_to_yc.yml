@@ -1,4 +1,4 @@
-name: Python CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -47,6 +47,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Login Yandex Cloud
+        env:
+          FSTR_DB_HOST: ${{ secrets.FSTR_DB_HOST }}
+          FSTR_DB_PORT: ${{ secrets.FSTR_DB_PORT }}
+          FSTR_DB_NAME: ${{ secrets.FSTR_DB_NAME }}
+          FSTR_DB_LOGIN: ${{ secrets.FSTR_DB_LOGIN }}
+          FSTR_DB_PASS: ${{ secrets.FSTR_DB_PASS }}
         uses: yc-actions/yc-cr-login@v2
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
