@@ -11,11 +11,11 @@ load_dotenv()
 
 
 class AppSettings(BaseSettings):
-    fstr_db_login: str
-    fstr_db_pass: str
-    fstr_db_name: str
-    fstr_db_host: str
-    fstr_db_port: int
+    input_fstr_db_login: str
+    input_fstr_db_pass: str
+    input_fstr_db_name: str
+    input_fstr_db_host: str
+    input_fstr_db_port: int
     app_port: int = 8000
     app_host: str = 'localhost'
     reload: bool = True
@@ -27,9 +27,9 @@ class AppSettings(BaseSettings):
     @classmethod
     def set_postgres_dsn(cls, data: dict) -> Self:
         data['postgres_dsn'] = MultiHostUrl(
-            f'postgresql+asyncpg://{data["fstr_db_login"]}'
-            f':{data["fstr_db_pass"]}@{data["fstr_db_host"]}'
-            f':{data["fstr_db_port"]}/{data["fstr_db_name"]}',
+            f'postgresql+asyncpg://{data["input_fstr_db_login"]}'
+            f':{data["input_fstr_db_pass"]}@{data["input_fstr_db_host"]}'
+            f':{data["input_fstr_db_port"]}/{data["input_fstr_db_name"]}',
         )
         return data
 
