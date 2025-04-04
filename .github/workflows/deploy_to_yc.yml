@@ -59,8 +59,7 @@ jobs:
           --build-arg FSTR_DB_PORT=${{ secrets.FSTR_DB_PORT }} \
           --build-arg FSTR_DB_NAME=${{ secrets.FSTR_DB_NAME }} \
           --build-arg FSTR_DB_PASS=${{ secrets.FSTR_DB_PASS }} \
-          --build-arg number_of_shards=5 \
-          -no-cache .
+          --no-cache .
           docker push cr.yandex/${{secrets.YANDEX_REGISTRY_ID}}/${{secrets.YANDEX_REPO_NAME}}:${{github.sha}}
 
   deploy_image_to_yc:
