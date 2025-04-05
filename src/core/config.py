@@ -16,7 +16,7 @@ class AppSettings(BaseSettings):
     fstr_db_name: str
     fstr_db_host: str
     fstr_db_port: int
-    app_port: int = 8000
+    app_port: int = 8080
     app_host: str = 'localhost'
     reload: bool = True
     cpu_count: Optional[int] = None
