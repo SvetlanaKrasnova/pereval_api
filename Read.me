@@ -1,0 +1,19 @@
+Доступ к pgadmin (В комментариях к ссылке на работу скинула дополнительные данные для подключения):
+http://89.169.158.52:82
+
+Документация
+http://89.169.158.52:8080/api/openapi
+
+
+##### Примеры запросов ######
+Добавить перевал:
+curl --request POST --header "Content-Type: application/json" --data '{"beauty_title":"пер. ","title":"Пхия","other_titles":"Триев","connect":"","add_time":"2025-09-22 13:18:13","coords":{"latitude":45.3842,"longitude":7.1525,"height":1200},"level":{"winter": "","summer":"1А","autumn":"","spring":"1А"},"images":[{"data":"iVBORw0KGgoANGsrtG95HwlW1akBUYXUggg==","title":"Пхия"}],"user":{"email":"user@email.tld","fam":"Пупкин","name":"Василий","otc":"Иванович","phone":"79031234567"}}' "http://89.169.158.52:8080/submitData"
+
+Получить перевал по id:
+curl --request GET --header "accept: application/json" "http://89.169.158.52:8080/submitData/1"
+
+Получить спискок перевалов по email:
+curl --request GET --header "accept: application/json" "http://89.169.158.52:8080/submitData/?user__email=user@example.com"
+
+Изменить данные о перевале:
+curl --request PATCH  --header "Content-Type: application/json" --header "accept: application/json" --data '{"beauty_title": "пер. ", "title": "Саяны", "other_titles": "other", "connect": "", "add_time": "2025-03-23 15:15:15", "coords": {"latitude": 1, "longitude": 1, "height": 3492}, "level": {"winter": "", "summer": "2F", "autumn": "", "spring": ""},  "images": []}' "http://89.169.158.52:8080/submitData/1"

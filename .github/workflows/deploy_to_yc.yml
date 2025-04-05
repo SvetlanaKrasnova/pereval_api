@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - 'docker_files'
+      - 'main'
 
 jobs:
   run_tests:
