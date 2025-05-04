@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'edit_port_step_deploy_image_yc'
     pull_request:
       - 'main'
 
@@ -81,4 +82,4 @@ jobs:
             sudo docker login --username oauth --password ${{ secrets.OAUTH_DOCKER_PASS }} cr.yandex
             sudo docker pull cr.yandex/${{ secrets.YANDEX_REGISTRY_ID }}/${{ secrets.YANDEX_REPO_NAME }}:${{ github.sha }}
             sudo docker rm -f pereval
-            sudo docker run -d -p 8080:8080 --name pereval cr.yandex/${{ secrets.YANDEX_REGISTRY_ID }}/${{ secrets.YANDEX_REPO_NAME }}:${{ github.sha }}
+            sudo docker run -d -p ${{ secrets.APP_PORT }}:8080 --name pereval cr.yandex/${{ secrets.YANDEX_REGISTRY_ID }}/${{ secrets.YANDEX_REPO_NAME }}:${{ github.sha }}
